@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import * as actionCreators from '../actions/auth';
 
 function mapStateToProps(state) {
@@ -22,9 +23,9 @@ export function DetermineAuth(Component) {
 
         componentWillMount() {
             this.checkAuth();
-            this.state = {
+            this.setState({
                 loaded_if_needed: false,
-            };
+            });
         }
 
         componentWillReceiveProps(nextProps) {
@@ -76,7 +77,7 @@ export function DetermineAuth(Component) {
     }
 
     AuthenticatedComponent.propTypes = {
-        loginUserSuccess: React.PropTypes.func,
+        loginUserSuccess: PropTypes.func,
     };
 
     return connect(mapStateToProps, mapDispatchToProps)(AuthenticatedComponent);

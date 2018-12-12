@@ -2,11 +2,11 @@ const path = require('path');
 const autoprefixer = require('autoprefixer');
 const postcssImport = require('postcss-import');
 const merge = require('webpack-merge');
+const webpack = require('webpack');
 
 const development = require('./dev.config');
-const production = require('./prod.config');
 
-require('babel-polyfill').default;
+require('babel-polyfill');
 
 const TARGET = process.env.npm_lifecycle_event;
 
@@ -17,72 +17,75 @@ const PATHS = {
 
 process.env.BABEL_ENV = TARGET;
 
+process.traceDeprecation = true;
+
+
 const common = {
     entry: [
         PATHS.app,
     ],
+
+    resolve: {
+        extensions: ['*', '.jsx', '.js', '.json', '.scss'],
+        modules: ['node_modules', PATHS.app],
+    },
+    resolveLoader: {
+        modules: ['node_modules', PATHS.app],
+    },
 
     output: {
         path: PATHS.build,
         filename: 'bundle.js',
     },
 
-    resolve: {
-        extensions: ['', '.jsx', '.js', '.json', '.scss'],
-        modulesDirectories: ['node_modules', PATHS.app],
+    node: {
+        fs: 'empty',
+        net: 'empty',
     },
-
     module: {
-        loaders: [{
+        rules: [{
             test: /bootstrap-sass\/assets\/javascripts\//,
-            loader: 'imports?jQuery=jquery',
+            loader: 'imports-loader?jQuery=jquery',
         }, {
-            test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url?limit=10000&mimetype=application/font-woff',
-        }, {
-            test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url?limit=10000&mimetype=application/font-woff2',
-        }, {
-            test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url?limit=10000&mimetype=application/octet-stream',
-        }, {
-            test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url?limit=10000&mimetype=application/font-otf',
-        }, {
-            test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'file',
-        }, {
-            test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-            loader: 'url?limit=10000&mimetype=image/svg+xml',
+            test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+            loader: 'file-loader',
         }, {
             test: /\.js$/,
-            loaders: ['babel-loader'],
-            exclude: /node_modules/,
+            loader: 'babel-loader',
+            exclude: [/node_modules/],
         }, {
             test: /\.png$/,
-            loader: 'file?name=[name].[ext]',
+            loader: 'file-loader?name=[name].[ext]',
         }, {
             test: /\.jpg$/,
-            loader: 'file?name=[name].[ext]',
+            loader: 'file-loader?name=[name].[ext]',
         }],
     },
 
-    postcss: (webpack) => (
-        [
-            autoprefixer({
-                browsers: ['last 2 versions'],
-            }),
-            postcssImport({
-                addDependencyTo: webpack,
-            }),
-        ]
-    ),
+    plugins: [
+        new webpack.LoaderOptionsPlugin({
+            options: {
+                output: {
+                    path: 'dist/',
+                },
+                postcss: [
+                    autoprefixer({
+                        browsers: ['last 2 versions'],
+                    }),
+                    postcssImport({
+                        addDependencyTo: webpack,
+                    }),
+                ],
+            },
+        }),
+    ],
+
+    stats: {
+        maxModules: Infinity,
+        optimizationBailout: false,
+    },
 };
 
-if (TARGET === 'start' || !TARGET) {
+if (TARGET === 'dev') {
     module.exports = merge(development, common);
-}
-
-if (TARGET === 'build' || !TARGET) {
-    module.exports = merge(production, common);
 }

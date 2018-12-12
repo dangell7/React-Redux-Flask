@@ -1,7 +1,7 @@
 /* eslint new-cap: 0 */
 
 import React from 'react';
-import { Route } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 
 /* containers */
 import { App } from './containers/App';
@@ -17,12 +17,14 @@ import { requireAuthentication } from './components/AuthenticatedComponent';
 import { requireNoAuthentication } from './components/notAuthenticatedComponent';
 
 export default (
-    <Route path="/" component={App}>
+    <App>
+        <Switch>
         <Route path="main" component={requireAuthentication(ProtectedView)} />
         <Route path="login" component={requireNoAuthentication(LoginView)} />
         <Route path="register" component={requireNoAuthentication(RegisterView)} />
         <Route path="home" component={requireNoAuthentication(HomeContainer)} />
         <Route path="analytics" component={requireAuthentication(Analytics)} />
         <Route path="*" component={DetermineAuth(NotFound)} />
-    </Route>
+        </Switch>
+    </App>
 );

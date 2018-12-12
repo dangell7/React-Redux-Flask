@@ -3,11 +3,14 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Paper from 'material-ui/Paper';
 import * as actionCreators from '../actions/auth';
 import { validateEmail } from '../utils/misc';
+
+import { LoginTitle } from './Login/loginTitle';
 
 function mapStateToProps(state) {
     return {
@@ -118,7 +121,7 @@ export default class LoginView extends React.Component {
                 <Paper style={style}>
                     <form role="form">
                         <div className="text-center">
-                            <h2>Login to view protected content!</h2>
+                            <LoginTitle />
                             {
                                 this.props.statusText &&
                                     <div className="alert alert-info">
@@ -163,6 +166,6 @@ export default class LoginView extends React.Component {
 }
 
 LoginView.propTypes = {
-    loginUser: React.PropTypes.func,
-    statusText: React.PropTypes.string,
+    loginUser: PropTypes.func,
+    statusText: PropTypes.string,
 };

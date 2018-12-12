@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { browserHistory } from 'react-router';
+import PropTypes from 'prop-types';
 import * as actionCreators from '../actions/auth';
 
 function mapStateToProps(state) {
@@ -38,9 +39,11 @@ export function requireNoAuthentication(Component) {
 
         checkAuth(props = this.props) {
             if (props.isAuthenticated) {
+                console.log('N1')
                 browserHistory.push('/main');
 
             } else {
+              console.log('N2')
                 const token = localStorage.getItem('token');
                 if (token) {
                     fetch('/api/is_token_valid', {
@@ -64,6 +67,7 @@ export function requireNoAuthentication(Component) {
                             }
                         });
                 } else {
+                  console.log('N3')
                     this.setState({
                         loaded: true,
                     });
@@ -85,8 +89,8 @@ export function requireNoAuthentication(Component) {
     }
 
     notAuthenticatedComponent.propTypes = {
-        loginUserSuccess: React.PropTypes.func,
-        isAuthenticated: React.PropTypes.bool,
+        loginUserSuccess: PropTypes.func,
+        isAuthenticated: PropTypes.bool,
     };
 
     return connect(mapStateToProps, mapDispatchToProps)(notAuthenticatedComponent);

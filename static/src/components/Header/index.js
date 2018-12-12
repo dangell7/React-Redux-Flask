@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import LeftNav from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+
+import history from '../../history';
+
 
 import * as actionCreators from '../../actions/auth';
 
@@ -91,7 +94,6 @@ export class Header extends Component {
                 </LeftNav>
                 <AppBar
                   title="React-Redux-Flask"
-                  onLeftIconButtonTouchTap={() => this.openNav()}
                   iconElementRight={
                       <FlatButton label="Home" onClick={() => this.dispatchNewRoute('/')} />
                     }
@@ -103,6 +105,6 @@ export class Header extends Component {
 }
 
 Header.propTypes = {
-    logoutAndRedirect: React.PropTypes.func,
-    isAuthenticated: React.PropTypes.bool,
+    logoutAndRedirect: PropTypes.func,
+    isAuthenticated: PropTypes.bool,
 };
